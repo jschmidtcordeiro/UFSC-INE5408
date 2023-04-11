@@ -66,11 +66,11 @@ void structures::ArrayQueue<T>::enqueue(const T& data) {
     if (full()) {
         throw std::out_of_range("fila cheia");
     } else {
-        contents[end_] = data;
         end_++;
+        contents[end_] = data;
     }
 }
-
+ 
 template<typename T>
 T structures::ArrayQueue<T>::dequeue() {
     // Teste se a fila esta vazia
@@ -78,7 +78,7 @@ T structures::ArrayQueue<T>::dequeue() {
         throw std::out_of_range("fila vazia");
     }
     T out = contents[begin_];
-    for (int i = 0; i < end_ - 1; i++) {
+    for (int i = 0; i < end_; i++) {
         contents[i] = contents[i + 1];
     }
     end_--;
@@ -87,15 +87,15 @@ T structures::ArrayQueue<T>::dequeue() {
 
 template<typename T>
 T& structures::ArrayQueue<T>::back() {
-    if (end_ == -1) {
+    if (end_ < 0) {
         throw std::out_of_range("fila vazia");
     }
-    return contents[end_ - 1];
+    return contents[end_];
 }
 
 template<typename T>
 void structures::ArrayQueue<T>::clear() {
-    end_ = begin_ - 1;
+    end_ = -1;
 }
 
 template<typename T>
@@ -115,5 +115,5 @@ bool structures::ArrayQueue<T>::empty() {
 
 template<typename T>
 bool structures::ArrayQueue<T>::full() {
-    return (end_ == static_cast<int>(max_size())-1);
+    return end_ + 1 == static_cast<int>(max_size());
 }
