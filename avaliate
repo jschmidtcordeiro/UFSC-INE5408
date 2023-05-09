@@ -100,3 +100,4 @@ esac
 
 build $1 $ARGS
 ./$1
+rm $1
