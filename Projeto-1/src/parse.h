@@ -16,16 +16,16 @@ class parse_error : std::exception {
     }
 };
 
-class StringReader {
+class LeitorString {
 public:
-    StringReader(const std::string& string) : str(string) {}
+    LeitorString(const std::string& string) : str(string) {}
 
-    char peek() {
+    char get_i() {
         return str[i];
     }
 
-    char read_char(char ch = 0) {
-        char p = peek();
+    char caracter(char ch = 0) {
+        char p = get_i();
         
         if (!ch || ch == p) {
             i++;
@@ -34,35 +34,35 @@ public:
         return 0;
     }
 
-    std::string read_word() {
+    std::string palavra() {
         int start = i;
-        char ch = peek();
+        char ch = get_i();
 
         while(ch && !isspace(ch) && ch != '<' && ch != '>') {
             i++;
-            ch = peek();
+            ch = get_i();
         }
         return str.substr(start, i - start);
     }
 
-    std::string read_until(char ch) {
+    std::string limite(char ch) {
         int start = i;
-        while(peek() && peek() != ch) {
+        while(get_i() && get_i() != ch) {
             i++;
         }
         return str.substr(start, i - start);
     }
 
-    void consume_space() {
-        while (peek() && isspace(peek())) {
+    void tirar_espaco() {
+        while (get_i() && isspace(get_i())) {
             i++;
         }
     }
 
     char expect(char ch) {
-        char result = read_char(ch);
+        char result = caracter(ch);
         if (!result) {
-            throw parse_error(std::string("Expected character '") + ch + "'. Got '" + peek() + "'.");
+            throw parse_error(std::string("Expected character '") + ch + "'. Got '" + get_i() + "'.");
         }
         return result;
     }
@@ -71,14 +71,14 @@ public:
         std::string key = "";
         bool is_closing = false;
     };
-    Tag parse_tag() {
+    Tag analisa_tag() {
         expect('<');
-        bool is_closing = read_char('/');
-        consume_space();
+        bool is_closing = caracter('/');
+        tirar_espaco();
 
-        std::string key = read_word();
+        std::string key = palavra();
 
-        consume_space();
+        tirar_espaco();
         expect('>');
         Tag tag;
         tag.is_closing = is_closing;
@@ -87,7 +87,7 @@ public:
         return tag;
     }
 
-    StringReader& operator++() {
+    LeitorString& operator++() {
         ++i;
         return *this;
     }
